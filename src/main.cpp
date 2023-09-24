@@ -1,11 +1,12 @@
 #include <iostream>
-#include "../include/kmp.h"
+#include "../include/app.h"
 
 using namespace std;
 
 int main() {
-	vector<int> res;
-	cout << kmp("bcddsjalfbcd", "abcd", res) << std::endl;
-	for (int el : res)
-		cout << el << ' ';
+	srand(time(NULL));
+	setlocale(LC_ALL, "rus");
+	
+	App app;
+	app.run();
 }

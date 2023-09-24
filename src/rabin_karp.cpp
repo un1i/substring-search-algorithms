@@ -6,7 +6,6 @@ size_t rabin_karp(const std::string& text, const std::string& sample, size_t alp
 	int sample_hash = 0;
 	int substr_hash = 0;
 	int limit = 0;
-
 	for (int i = 0; i < sample.size(); i++) {
 		sample_hash = (sample_hash * alph_sz + sample[i]) % MOD;
 		substr_hash = (substr_hash * alph_sz + text[i]) % MOD;
@@ -16,8 +15,13 @@ size_t rabin_karp(const std::string& text, const std::string& sample, size_t alp
 	for (int i = 0; i < limit; i++) {
 		if (sample_hash == substr_hash && char_verification(sample, text, i))
 			counter++;
-		if (i < limit - 1)
-			substr_hash = ((substr_hash - text[i] * highest_digit) * alph_sz + text[i + sample.size()]) % MOD;
+		if (i < limit - 1) {
+			substr_hash = (substr_hash - (text[i] * highest_digit) % MOD) * alph_sz + text[i + sample.size()];
+			substr_hash %= MOD;
+			/*substr_hash = (long long) ((substr_hash - (text[i] * highest_digit) % MOD) * alph_sz + text[i + sample.size()]) % MOD;*/
+			if (substr_hash < 0)
+				substr_hash += MOD;
+		}
 	}
 
 	return counter;
