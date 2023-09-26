@@ -6,8 +6,7 @@
 using namespace std;
 
 void App::run(){
-	cout << "Введите количество букв в алфавите: ";
-	cin >> alph_size;
+	enter_alphabet();
 	cout << "Введите текст:\n";
 	enter_string(txt);
 	cout << "Введите фрагмент, который нужно найти в тексте:\n";
@@ -86,26 +85,56 @@ void App::enter_string(str_types type) {
 }
 
 void App::standard_enter(string& str) {
-	cout << "Введите строку:\n";
-	cin >> str;
+	bool check;
+	do {
+		cout << "Введите строку:\n";
+		cin >> str;
+		check = check_str(str);
+		if (!check)
+			cout << "Некоторые символы строки не соответствуют алфавиту!\n";
+	} while (!check);
 }
 
 void App::random_enter(string& str) {
-	size_t len;
+	size_t len, quantity;
+	string letters = "";
+	char c;
+	bool check;
+	int way;
+
 	cout << "Введите длину строки: ";
 	cin >> len;
-	//Ввести нужные буквы
+	cout << "1 - использовать все буквы для составления слова\n2 - выбрать определенные буквы\n";
+	cin >> way;
+	if (way == 2) {
+		print_alphabet();
+		cout << "Введите количество букв, которые нужно использовать для составления слова: ";
+		cin >> quantity;
+		do {
+			cout << "Введите буквы через пробел:\n";
+			for (int i = 0; i < quantity; i++) {
+				cin >> c;
+				letters += c;
+			}
+			check = check_str(letters);
+			if (!check)
+				cout << "Некоторые буквы не входят в алфавит!\n";
+		} while (!check);
+	}
+	else
+		for (auto element : alphabet)
+			letters += element.first;
+
 	str = "";
 	for (int i = 0; i < len; i++)
-		str += 'a' + rand() % 26;
+		str += letters[rand() % letters.size()];
 }
 
 void App::repeat_enter(string& str) {
 	size_t repetitions;
 	string tmp;
 	str = "";
-	cout << "Введите строку, которую нужно повторить:\n";
-	cin >> tmp;
+	standard_enter(tmp);
 	cout << "Введите количество повторений: ";
 	cin >> repetitions;
 	for (int i = 0; i < repetitions; i++)
@@ -113,17 +142,22 @@ void App::repeat_enter(string& str) {
 }
 
 void App::print_input_data() {
-	cout << "Текст:\n" << text << "\n\n";
+	print_alphabet();
+	cout << "\nТекст:\n" << text << "\n\n";
 	cout << "Фрагмент:\n" << sample << "\n\n";
 }
 
 void App::change_input_data() {
 	size_t way;
-	cout << "1 - изменить алфавит\n2 - изменить текст\n3 - изменить фрагмент";
+	cout << "1 - изменить алфавит\n2 - изменить текст\n3 - изменить фрагмент\n";
 	cin >> way;
 	switch (way)
 	{
 	case 1: {
+		enter_alphabet();
+		cout << "После изменения алфавита необходимо сменить текст и фрагмент.\n";
+		enter_string(txt);
+		enter_string(smp);
 		break;
 	}
 	case 2: {
@@ -151,11 +185,50 @@ void App::run_algorithms() {
 	kmp_time = clock() - start_time;
 
 	start_time = clock();
-	rk_res = rabin_karp(text, sample, alph_size);
+	rk_res = rabin_karp(text, sample, alphabet);
 	rk_time = clock() - start_time;
 
 	cout << "Алгоритм Кнута-Морриса-Пратта:\nКоличество фрагментов в тексте: " << kmp_res << "\nВремя работы: " << kmp_time << "ms.\n\n";
 	cout << "Алгоритм Рабина-Карпа: \nКоличество фрагментов в тексте: " << rk_res << "\nВремя работы: " << rk_time << "ms.\n\n";
+}
+
+void App::enter_alphabet() {
+	size_t alph_size;
+	char c;
+	int way;
+	alphabet.clear();
+	cout << "Введите количество букв в алфавите (от 1 до 93): ";
+	cin >> alph_size;
+	cout << "1 - ввести буквы алфавита самостоятельно\n2 - заполнить алфавит случайными символами\n";
+	cin >> way;
+	if (way == 1) {
+		cout << "Введите бувы алфавита через пробел:\n";
+		for (int i = 0; i < alph_size; i++) {
+			cin >> c;
+			alphabet[c] = i;
+		}
+	}
+	else {
+		while (alphabet.size() < alph_size) {
+			c = 33 + rand() % 93;
+			if (!alphabet.count(c))
+				alphabet[c] = alphabet.size();
+		}
+	}
+}
+
+bool App::check_str(const string& str) {
+	for (int i = 0; i < str.size(); i++)
+		if (!alphabet.count(str[i]))
+			return false;
+	return true;
+}
+
+void App::print_alphabet() {
+	cout << "Алфавит:\n";
+	for (auto element : alphabet)
+		cout << element.first << ' ';
+	cout << '\n';
 }
 
 

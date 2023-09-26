@@ -1,6 +1,8 @@
 #include <vector>
 #include "../include/kmp.h"
 
+std::vector<int> get_prefix(const std::string& str);
+
 size_t kmp(const std::string& text, const std::string& sample, std::vector<int>& res){
 	int j = 0;
 	size_t counter = 0;
