@@ -2,6 +2,7 @@
 #include "../include/app.h"
 #include "../include/kmp.h"
 #include "../include/rabin_karp.h"
+#include "../tests/test.h"
 
 using namespace std;
 
@@ -21,7 +22,7 @@ void App::menu() {
 	bool leave = false;
 	while (ex) {
 		system("cls");
-		cout << "1 - запустить алгоритмы поиска фрагмента в тексте\n2 - отобразить текст и фрагмент\n3 - изменить входные данные\n0 - выход\n";
+		cout << "1 - запустить алгоритмы поиска фрагмента в тексте\n2 - отобразить текст и фрагмент\n3 - изменить входные данные\n4 - запустить тесты\n0 - выход\n";
 		cin >> way;
 		switch (way)
 		{
@@ -38,6 +39,11 @@ void App::menu() {
 		case 3: {
 			system("cls");
 			change_input_data();
+			break;
+		}
+		case 4: {
+			system("cls");
+			Test::run_tests();
 			break;
 		}
 		default: {
